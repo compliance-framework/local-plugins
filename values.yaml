@@ -7,14 +7,12 @@ agent:
   api:
     url: "http://ccf-api:8080"
   plugins:
-    github-settings:
+    k8s:
       schedule: "*/5 * * * *"
-      source: /plugins/plugin-github-settings/plugin
+      source: /plugins/plugin-k8s/plugin
       policies:
-        - /plugins/plugin-github-settings-policies/bundle.tar.gz
-      config:
-        token: ""
-        organization: ""
+        - /plugins/plugin-k8s-opres-policies/bundle.tar.gz
+      config: {}
 
 # Mount the plugins emptyDir into the agent container (populated by the init container below)
 volumeMounts:
@@ -31,8 +29,8 @@ serviceAccount:
 
 initContainers:
   - name: plugin-sidecar
-    image: ghcr.io/compliance-framework/plugin-sidecar:v0.1.0
-    imagePullPolicy: Never
+    image: ghcr.io/compliance-framework/local-plugins:0.1.0
+    imagePullPolicy: IfNotPresent
     securityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
