@@ -1,0 +1,50 @@
+replicaCount: 1
+
+agent:
+  hostname: "ccf-agent-test"
+  daemon: true
+  verbosity: 1
+  api:
+    url: "http://ccf-api:8080"
+  plugins:
+    github-settings:
+      schedule: "*/5 * * * *"
+      source: /plugins/plugin-github-settings/plugin
+      policies:
+        - /plugins/plugin-github-settings-policies/bundle.tar.gz
+      config:
+        token: ""
+        organization: ""
+
+# Mount the plugins emptyDir into the agent container (populated by the init container below)
+volumeMounts:
+  - name: plugins
+    mountPath: /plugins
+    readOnly: true
+
+volumes:
+  - name: plugins
+    emptyDir: {}
+
+serviceAccount:
+  create: true
+
+initContainers:
+  - name: plugin-sidecar
+    image: ghcr.io/compliance-framework/plugin-sidecar:v0.1.0
+    imagePullPolicy: Never
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      capabilities:
+        drop:
+          - ALL
+    command:
+      - sh
+      - -c
+      - cp -rv /plugins/* /output/
+    volumeMounts:
+      - name: plugins
+        mountPath: /output
