@@ -9,7 +9,7 @@ FROM golang:1.25-alpine AS builder
 ARG GOOCI_VERSION=v0.0.7
 # All CCF plugins and policies
 ARG PLUGINS="\
-  ghcr.io/compliance-framework/plugin-k8s:v0.1.2 \
+  ghcr.io/compliance-framework/plugin-k8s:v0.1.3 \
   ghcr.io/compliance-framework/plugin-k8s-opres-policies:v0.1.1 \
   ghcr.io/compliance-framework/plugin-cloud-custodian:v0.1.1 \
   ghcr.io/compliance-framework/plugin-cloud-custodian-policies:v0.1.0"
